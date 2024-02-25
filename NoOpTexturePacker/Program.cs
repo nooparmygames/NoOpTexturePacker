@@ -1,6 +1,7 @@
 ﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using System.Diagnostics;
 
 //We use this object for the console logging when parallel processors want to write to console
 object ConsoleLock = new();
@@ -47,17 +48,17 @@ if (!(args.Length > 3 && bool.TryParse(args[3], out ShouldSaveUnityORM)))
     ShouldSaveUnityORM = GetYesOrNoAnswerFromConsole("Should save Unity ORM? Y/N");
 }
 if (!(args.Length > 4 && bool.TryParse(args[4], out ShouldSaveUnrealORM))) if (!(args.Length > 4 && bool.TryParse(args[4], out ShouldSaveUnrealORM)))
-{
-    ShouldSaveUnrealORM = GetYesOrNoAnswerFromConsole("Should save Unreal ORM? Y/N");
-}
+    {
+        ShouldSaveUnrealORM = GetYesOrNoAnswerFromConsole("Should save Unreal ORM? Y/N");
+    }
 if (!(args.Length > 4 && bool.TryParse(args[4], out ShouldSaveUnrealORM))) if (!(args.Length > 5 && bool.TryParse(args[5], out ShouldSaveUnitySmoothnessInMetallic)))
-{
-    ShouldSaveUnitySmoothnessInMetallic = GetYesOrNoAnswerFromConsole("Should save Unity Smoothness from inverse of roughness to alpha of metallic texture? Y/N");
-}
+    {
+        ShouldSaveUnitySmoothnessInMetallic = GetYesOrNoAnswerFromConsole("Should save Unity Smoothness from inverse of roughness to alpha of metallic texture? Y/N");
+    }
 if (!(args.Length > 4 && bool.TryParse(args[4], out ShouldSaveUnrealORM))) if (!(args.Length > 6 && bool.TryParse(args[6], out ShouldDeleteNonORMFiles)))
-{
-    ShouldDeleteNonORMFiles = GetYesOrNoAnswerFromConsole("Should DELETE roughness, metallic and AO textures after the operations are done? Y/N");
-}
+    {
+        ShouldDeleteNonORMFiles = GetYesOrNoAnswerFromConsole("Should DELETE roughness, metallic and AO textures after the operations are done? Y/N");
+    }
 
 //Search the directory specifiedfor files
 string[] paths = Directory.GetFiles(path, $"*.{SearchExtension}", SearchOption.AllDirectories);
@@ -70,7 +71,7 @@ foreach (string p in paths)
     string? dir = Path.GetDirectoryName(p);
     if (string.IsNullOrEmpty(dir))
         throw new Exception("The file directory should not be null");
-    
+
     string Name = Path.GetFileName(p);
     if (!FilesGroupedByDirectory.TryGetValue(dir, out List<string>? InDirectoryFileList))
     {
@@ -81,6 +82,8 @@ foreach (string p in paths)
     InDirectoryFileList.Add(p);
 }
 
+Stopwatch sw = new Stopwatch();
+sw.Start();
 //Process all images
 Parallel.ForEach(FilesGroupedByDirectory.Keys, Dir =>
 {
@@ -118,27 +121,30 @@ Parallel.ForEach(FilesGroupedByDirectory.Keys, Dir =>
             ORMUE = new Image<Rgb24>(AO.Width, AO.Height);
             ORMUnity = new Image<Rgb24>(AO.Width, AO.Height);
             NewMetallic = new Image<Argb32>(AO.Width, AO.Height);
-            for (int i = 0; i < Roughness.Width; i++)
-            {
+
+            for (int k = 0; k < 10; k++)
                 for (int j = 0; j < Roughness.Height; j++)
                 {
-                    if (ShouldSaveUnityORM || ShouldSaveUnitySmoothnessInMetallic)
+                    for (int i = 0; i < Roughness.Width; i++)
                     {
-                        Argb32 CurrentMetallicPixel = Metallic[i, j];
-                        byte InverseRoughness = (byte)(255 - Roughness[i, j].R);
-                        CurrentMetallicPixel.A = InverseRoughness;
-                        NewMetallic[i, j] = CurrentMetallicPixel;
-                        if (ShouldSaveUnityORM)
+
+                        if (ShouldSaveUnityORM || ShouldSaveUnitySmoothnessInMetallic)
                         {
-                            ORMUnity[i, j] = new Rgb24(AO[i, j].R, InverseRoughness, Metallic[i, j].R);
+                            Argb32 CurrentMetallicPixel = Metallic[i, j];
+                            byte InverseRoughness = (byte)(255 - Roughness[i, j].R);
+                            CurrentMetallicPixel.A = InverseRoughness;
+                            NewMetallic[i, j] = CurrentMetallicPixel;
+                            if (ShouldSaveUnityORM)
+                            {
+                                ORMUnity[i, j] = new Rgb24(AO[i, j].R, InverseRoughness, Metallic[i, j].R);
+                            }
+                        }
+                        if (ShouldSaveUnrealORM)
+                        {
+                            ORMUE[i, j] = new Rgb24(AO[i, j].R, Roughness[i, j].R, Metallic[i, j].R);
                         }
                     }
-                    if (ShouldSaveUnrealORM)
-                    {
-                        ORMUE[i, j] = new Rgb24(AO[i, j].R, Roughness[i, j].R, Metallic[i, j].R);
-                    }
                 }
-            }
             if (ShouldSaveUnitySmoothnessInMetallic)
             {
                 NewMetallic.Save(MetallicFile);
@@ -181,7 +187,7 @@ Parallel.ForEach(FilesGroupedByDirectory.Keys, Dir =>
         Console.ForegroundColor = ConsoleColor.White;
     }
 });
-
+Console.Write($"Took {sw.ElapsedMilliseconds} ms");
 //Finished proccessing
 
 Console.ForegroundColor = ConsoleColor.Cyan;
