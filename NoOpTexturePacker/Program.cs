@@ -122,29 +122,29 @@ Parallel.ForEach(FilesGroupedByDirectory.Keys, Dir =>
             ORMUnity = new Image<Rgb24>(AO.Width, AO.Height);
             NewMetallic = new Image<Argb32>(AO.Width, AO.Height);
 
-            for (int k = 0; k < 10; k++)
-                for (int j = 0; j < Roughness.Height; j++)
-                {
-                    for (int i = 0; i < Roughness.Width; i++)
-                    {
 
-                        if (ShouldSaveUnityORM || ShouldSaveUnitySmoothnessInMetallic)
+            for (int j = 0; j < Roughness.Height; j++)
+            {
+                for (int i = 0; i < Roughness.Width; i++)
+                {
+
+                    if (ShouldSaveUnityORM || ShouldSaveUnitySmoothnessInMetallic)
+                    {
+                        Argb32 CurrentMetallicPixel = Metallic[i, j];
+                        byte InverseRoughness = (byte)(255 - Roughness[i, j].R);
+                        CurrentMetallicPixel.A = InverseRoughness;
+                        NewMetallic[i, j] = CurrentMetallicPixel;
+                        if (ShouldSaveUnityORM)
                         {
-                            Argb32 CurrentMetallicPixel = Metallic[i, j];
-                            byte InverseRoughness = (byte)(255 - Roughness[i, j].R);
-                            CurrentMetallicPixel.A = InverseRoughness;
-                            NewMetallic[i, j] = CurrentMetallicPixel;
-                            if (ShouldSaveUnityORM)
-                            {
-                                ORMUnity[i, j] = new Rgb24(AO[i, j].R, InverseRoughness, Metallic[i, j].R);
-                            }
-                        }
-                        if (ShouldSaveUnrealORM)
-                        {
-                            ORMUE[i, j] = new Rgb24(AO[i, j].R, Roughness[i, j].R, Metallic[i, j].R);
+                            ORMUnity[i, j] = new Rgb24(AO[i, j].R, InverseRoughness, Metallic[i, j].R);
                         }
                     }
+                    if (ShouldSaveUnrealORM)
+                    {
+                        ORMUE[i, j] = new Rgb24(AO[i, j].R, Roughness[i, j].R, Metallic[i, j].R);
+                    }
                 }
+            }
             if (ShouldSaveUnitySmoothnessInMetallic)
             {
                 NewMetallic.Save(MetallicFile);
