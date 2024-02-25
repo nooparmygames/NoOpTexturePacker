@@ -32,4 +32,7 @@ For any support or modification inqueries, use issues or email support@nooparmyg
 
 # Code Of Condust
 
-We follow US free speech laws but be polite to others and while honest, try to be helpful and a good contributer.
+You should only discuss this software in the project related spaces but in that context we follow US free speech laws.
+Try to be polite to others and while honest, try to be helpful and a good member of the community.
+We have no safe spacesand walking on egg shells but if you intentionally try to be rude or problematic toward us/others because you are like that or because you are against free speech, we will delete your discussions and ban those who try to cause trouble again and again for no reason. 
+We maintain this software for internal use and provide both paid and limited unpaid support and modifictions. We will decide wht to do using our own judgement in a case by case basis just like our paid offerings.
