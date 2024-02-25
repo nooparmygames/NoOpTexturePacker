@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Authors>NoOpArmy</Authors>
+    <Description>Convert PBR textures to Unreal Engine and Unity ORM formats and also converts roughness to smoothness and puts it in metallic alpha for unity.</Description>
+    <Copyright>Copyright NoOpArmy 2024</Copyright>
+    <PackageProjectUrl>https://nooparmygames.com</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.2" />
+  </ItemGroup>
+
+</Project>
