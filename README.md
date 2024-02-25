@@ -1,6 +1,6 @@
 # NoOpTexturePacker
 
-[our website](https://nooparmygames.com)
+[Discord](https://discord.gg/FA8R7APZWR) | [X/Twitter](https://x.com/nooparmy) | [our website](https://nooparmygames.com)
 
 This ssmall software can convert PBR textures stored in roughness, metallic and ambient occlusion textures to ORM textures for Unity and Unreal Engine.
 It can also create smoothness textures from roughness by inverting the texture and store it as the alpha of the metallic texture for Unity's default shaders.
