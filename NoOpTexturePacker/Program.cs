@@ -48,17 +48,17 @@ if (!(args.Length > 3 && bool.TryParse(args[3], out ShouldSaveUnityORM)))
     ShouldSaveUnityORM = GetYesOrNoAnswerFromConsole("Should save Unity ORM? Y/N");
 }
 if (!(args.Length > 4 && bool.TryParse(args[4], out ShouldSaveUnrealORM))) if (!(args.Length > 4 && bool.TryParse(args[4], out ShouldSaveUnrealORM)))
-    {
+{
         ShouldSaveUnrealORM = GetYesOrNoAnswerFromConsole("Should save Unreal ORM? Y/N");
-    }
+}
 if (!(args.Length > 4 && bool.TryParse(args[4], out ShouldSaveUnrealORM))) if (!(args.Length > 5 && bool.TryParse(args[5], out ShouldSaveUnitySmoothnessInMetallic)))
-    {
+{
         ShouldSaveUnitySmoothnessInMetallic = GetYesOrNoAnswerFromConsole("Should save Unity Smoothness from inverse of roughness to alpha of metallic texture? Y/N");
-    }
+}
 if (!(args.Length > 4 && bool.TryParse(args[4], out ShouldSaveUnrealORM))) if (!(args.Length > 6 && bool.TryParse(args[6], out ShouldDeleteNonORMFiles)))
-    {
+{
         ShouldDeleteNonORMFiles = GetYesOrNoAnswerFromConsole("Should DELETE roughness, metallic and AO textures after the operations are done? Y/N");
-    }
+}
 
 //Search the directory specifiedfor files
 string[] paths = Directory.GetFiles(path, $"*.{SearchExtension}", SearchOption.AllDirectories);
