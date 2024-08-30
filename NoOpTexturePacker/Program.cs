@@ -48,17 +48,17 @@ if (!(args.Length > 3 && bool.TryParse(args[3], out ShouldSaveUnityORM)))
     ShouldSaveUnityORM = GetYesOrNoAnswerFromConsole("Should save Unity ORM? Y/N");
 }
 if (!(args.Length > 4 && bool.TryParse(args[4], out ShouldSaveUnrealORM))) if (!(args.Length > 4 && bool.TryParse(args[4], out ShouldSaveUnrealORM)))
-{
+    {
         ShouldSaveUnrealORM = GetYesOrNoAnswerFromConsole("Should save Unreal ORM? Y/N");
-}
+    }
 if (!(args.Length > 4 && bool.TryParse(args[4], out ShouldSaveUnrealORM))) if (!(args.Length > 5 && bool.TryParse(args[5], out ShouldSaveUnitySmoothnessInMetallic)))
-{
+    {
         ShouldSaveUnitySmoothnessInMetallic = GetYesOrNoAnswerFromConsole("Should save Unity Smoothness from inverse of roughness to alpha of metallic texture? Y/N");
-}
+    }
 if (!(args.Length > 4 && bool.TryParse(args[4], out ShouldSaveUnrealORM))) if (!(args.Length > 6 && bool.TryParse(args[6], out ShouldDeleteNonORMFiles)))
-{
+    {
         ShouldDeleteNonORMFiles = GetYesOrNoAnswerFromConsole("Should DELETE roughness, metallic and AO textures after the operations are done? Y/N");
-}
+    }
 
 //Search the directory specifiedfor files
 string[] paths = Directory.GetFiles(path, $"*.{SearchExtension}", SearchOption.AllDirectories);
@@ -111,7 +111,7 @@ Parallel.ForEach(FilesGroupedByDirectory.Keys, Dir =>
         Image<Argb32>? Roughness = null;
         Image<Argb32>? Metallic = null;
         Image<Rgb24>? ORMUE = null;
-        Image<Rgb24>? ORMUnity = null;
+        Image<Rgba32>? ORMUnity = null;
         Image<Argb32>? NewMetallic = null;
         try
         {
@@ -119,7 +119,7 @@ Parallel.ForEach(FilesGroupedByDirectory.Keys, Dir =>
             Roughness = Image.Load<Argb32>(RoughnessFile);
             Metallic = Image.Load<Argb32>(MetallicFile);
             ORMUE = new Image<Rgb24>(AO.Width, AO.Height);
-            ORMUnity = new Image<Rgb24>(AO.Width, AO.Height);
+            ORMUnity = new Image<Rgba32>(AO.Width, AO.Height);
             NewMetallic = new Image<Argb32>(AO.Width, AO.Height);
 
 
@@ -136,7 +136,7 @@ Parallel.ForEach(FilesGroupedByDirectory.Keys, Dir =>
                         NewMetallic[i, j] = CurrentMetallicPixel;
                         if (ShouldSaveUnityORM)
                         {
-                            ORMUnity[i, j] = new Rgb24(AO[i, j].R, InverseRoughness, Metallic[i, j].R);
+                            ORMUnity[i, j] = new Rgba32(Metallic[i, j].R, AO[i, j].R, 255, InverseRoughness);
                         }
                     }
                     if (ShouldSaveUnrealORM)
